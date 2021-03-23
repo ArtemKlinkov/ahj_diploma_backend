@@ -67,7 +67,8 @@ let initMsg = false;
 router.get('/initmsg', async (ctx, next) => {
   if (!initMsg) {
     initMsg = true;
-    const resp = await fetch('https://ahj-diploma-backend.herokuapp.com/msg.json');
+    // const resp = await fetch('https://ahj-diploma-backend.herokuapp.com/msg.json');
+    const resp = await fetch('http://localhost:7070/msg.json');
     const body = await resp.text();
     const arrInitMsg = JSON.parse(body);
     arrMessges.push(...arrInitMsg);
@@ -92,7 +93,9 @@ router.get('/msg/:numb', async (ctx, next) => {
 router.post('/favorits', async (ctx, next) => {
   const msgOb = JSON.parse(ctx.request.body);
   const itemIndex = arrMessges.findIndex((item) => JSON.parse(item).id === msgOb.id);
-  arrMessges[itemIndex].favorit = msgOb.value;
+  const parsedObj = JSON.parse(arrMessges[itemIndex]);
+  parsedObj.favorit = msgOb.value;
+  arrMessges[itemIndex] = JSON.stringify(parsedObj);
   const obj = {
     type: 'change-favorit',
     id: msgOb.id,
